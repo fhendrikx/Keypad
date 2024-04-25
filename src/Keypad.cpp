@@ -91,7 +91,19 @@ void Keypad::scanKeys() {
 		pin_mode(columnPins[c],OUTPUT);
 		pin_write(columnPins[c], LOW);	// Begin column pulse output.
 		for (byte r=0; r<sizeKpd.rows; r++) {
-			bitWrite(bitMap[r], c, !pin_read(rowPins[r]));  // keypress is active low so invert to high.
+            int val = analogRead(rowPins[r]);
+
+            if (val > 500)
+            {
+                val = 1;
+            }
+            else
+            {
+                val = 0;
+            }
+
+            // keypress is active low so invert to high.
+            bitWrite(bitMap[r], c, !val);
 		}
 		// Set pin to high impedance input. Effectively ends column pulse.
 		pin_write(columnPins[c],HIGH);
